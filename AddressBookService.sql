@@ -1,15 +1,15 @@
 USE AddressBookService;
 --uc2
-CREATE TABLE addressbook(
-    first_name VARCHAR(20) NOT NULL,
-    last_name VARCHAR(20) NOT NULL,
-    address VARCHAR(100) NOT NULL,
-    city VARCHAR(20) NOT NULL,
-    state VARCHAR(20) NOT NULL,
-    zip INT NOT NULL,
-    phone_no VARCHAR(15) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-);
+-- CREATE TABLE addressbook(
+--     first_name VARCHAR(20) NOT NULL,
+--     last_name VARCHAR(20) NOT NULL,
+--     address VARCHAR(100) NOT NULL,
+--     city VARCHAR(20) NOT NULL,
+--     state VARCHAR(20) NOT NULL,
+--     zip INT NOT NULL,
+--     phone_no VARCHAR(15) NOT NULL,
+--     email VARCHAR(50) NOT NULL,
+-- );
 --uc3
 --Insert data
 INSERT INTO addressbook (first_name,last_name,address,city,[state],zip,phone_no,email)
@@ -73,3 +73,63 @@ INSERT INTO addressbook VALUES
 ('Shakira','Shamina','Borivali','Mumbai','Maharashtra',400098,'7452166','shakira@gmail.com','Book1','Family'),
 ('Shakira','Shamina','Borivali','Mumbai','Maharashtra',400098,'7452166','shakira@gmail.com','Book2','Friends');
 SELECT * FROM addressbook;
+
+--UC12 
+--ER DIAGRAM 
+DROP TABLE addressbook;
+--CREATING TABLE CONTACT
+CREATE TABLE contact(
+    first_name VARCHAR(20) NOT NULL,
+    last_name VARCHAR(20) NOT NULL,
+    address VARCHAR(100) NOT NULL,
+    city VARCHAR(20) NOT NULL,
+    state VARCHAR(20) NOT NULL,
+    zip INT NOT NULL,
+    phone_no VARCHAR(15) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    book_id VARCHAR(30) FOREIGN KEY REFERENCES booknametype(book_id)
+);
+--CREATING TABLE BOOKNAMETYPE
+CREATE TABLE booknametype(
+    book_id VARCHAR(30) NOT NULL PRIMARY KEY,
+    bk_name VARCHAR(30) NOT NULL,
+    bk_type VARCHAR(30) NOT NULL
+);
+--INSERTING DATA IN CONTACT
+INSERT INTO contact (first_name,last_name,address,city,[state],zip,phone_no,email,book_id)
+    VALUES('Vladimir','Putin','3/40, Broadway Street','Moscow','Narnia',989001,'2354618524','v.putin@gmail.com','BK1'),
+        ('Sherlock','Holmes','Baker Street','London','England',567897,'7654874','sherlocked@gmail.com','BK2'),
+        ('Vladimir','Putina','3/40 Broadway Street','Moscow','Narnia',989001,'2354618524','v.putin@gmail.com','BK3'),
+        ('Jake','Peralta','99 Precinct','New York','USA',25679,'911','j.pera@gmail.com','BK1'),
+        ('keya','lutina','yenyen','Hiroshima','japan',450981,'239871','ke.lut@gmail.com','BK2'),
+        ('rosa','lopa','andheri','New York','Narnia',25679,'235461','rosa@gmail.com','BK3'),
+        ('Shakira','Shamina','Borivali','Mumbai','Maharashtra',400098,'7452166','shakira@gmail.com','BK1');
+SELECT * FROM contact;
+
+--INSERTING DATA IN BOOKNAME
+INSERT INTO booknametype(book_id,bk_name,bk_type)
+    VALUES('BK1','Book1','Family'),('BK2','Book2','Friends'),('BK3','Book3','Profession');
+SELECT * FROM booknametype;
+
+--LETS VIEW THE TABLES
+SELECT * FROM contact;
+SELECT * FROM booknametype;
+
+--UC13
+--RETRIEVE DATA AS NEEDED
+SELECT first_name, last_name FROM contact c INNER JOIN booknametype b
+ON c.book_id=b.book_id 
+WHERE LOWER(c.city)='new york' OR LOWER(c.state)='england';
+
+SELECT COUNT(c.first_name) AS TOTAL_COUNT, c.city AS PLACE FROM contact c INNER JOIN booknametype b
+ON c.book_id=b.book_id 
+GROUP BY c.city;
+
+SELECT first_name, last_name FROM contact c INNER JOIN booknametype b
+ON c.book_id=b.book_id 
+WHERE LOWER(c.city)='new york'
+ORDER BY first_name DESC;
+
+SELECT b.bk_type AS Book_Type, COUNT(b.bk_type) AS Total_COUNT FROM contact c INNER JOIN booknametype b
+ON c.book_id=b.book_id 
+GROUP BY b.bk_type;
